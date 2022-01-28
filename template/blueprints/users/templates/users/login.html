@@ -1,0 +1,21 @@
+{% extends '_base/base.html' %}
+{% from "bootstrap/form.html" import render_form, render_field %}
+{% block content %}
+
+  <header class="content-header">
+    <center><h1>Login</h1></center>
+    <hr><br>
+  </header>
+
+  <br>
+  <div class="container">
+    <form action="{{ url_for('users_bp.login') }}" method="post" class="form" role="form">
+      {{ form.csrf_token() }}
+      {{ render_field(form.username) }}
+      {{ render_field(form.password) }}
+      {{ render_field(form.remember_me) }}
+      {{ render_field(form.submit) }}
+    </form>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+Dear {{ user.username }},
+
+Welcome to Lophi.us!
+
+To confirm your account please click on the following link:
+
+{{ url_for('users_bp.confirm', token=token, _external=True) }}
+
+Sincerely,
+
+The Lophi.us Team
+
+Note: replies to this email address are not monitored.

@@ -1,0 +1,15 @@
+{% extends "_base/base.html" %}
+
+{% block page_title %}Page Not Found (404){% endblock %}
+
+
+{% block content %}
+<div class="jumbotron">
+    <div class="text-center">
+        <h1>404</h1>
+        <p>Sorry, that page doesn't exist.</p>
+        <p>Want to <a href="{{ url_for('home_bp.home') }}">go home</a> instead?</p>
+        <img src="https://robohash.org/{{funny_word}}.png">
+    </div>
+</div>
+{% endblock %}

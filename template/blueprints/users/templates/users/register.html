@@ -1,0 +1,22 @@
+{% extends '_base/base.html' %}
+{% from "bootstrap/form.html" import render_form, render_field %}
+{% block content %}
+
+  <header class="content-header">
+    <center><h1>Register</h1></center>
+    <hr><br>
+  </header>
+
+  <br>
+  <div class="container">
+    <form action="{{ url_for('users_bp.register') }}" method="post" class="form" role="form">
+      {{ form.csrf_token() }}
+      {{ render_field(form.name) }}
+      {{ render_field(form.email) }}
+      {{ render_field(form.username) }}
+      {{ render_field(form.password) }}
+      {{ render_field(form.confirm) }}
+      {{ render_field(form.submit) }}
+    </form>
+  </div>
+{% endblock %}

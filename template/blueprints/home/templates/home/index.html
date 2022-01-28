@@ -1,0 +1,21 @@
+{% extends "_base/base.html" %}
+{% from 'bootstrap4/form.html' import render_form %}
+
+{% block content %}
+<div class="col py-3">
+    <div class="container-fluid">
+        <div class="jumbotron">
+            <h1>Welcome to {{ welcome }}</h1>
+        </div>
+        <div class="container">
+        {% if current_user.is_authenticated %}
+            <h3>Hello {{ user.name }}</h3>
+        {% else %}
+            <h3>Welcome, please register an account before continuing</h3>
+            <a class="nav-link" href="{{ url_for('users_bp.register') }}"><span class="fas fa-user"></span> Sign Up</a>
+        {% endif %}
+        </div>
+        
+    </div>
+</div>
+{% endblock content %}

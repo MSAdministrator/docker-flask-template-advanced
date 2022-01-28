@@ -1,0 +1,27 @@
+# Flask
+Flask
+bootstrap-flask
+Werkzeug
+gunicorn
+itsdangerous
+
+# Extensions
+Flask-Bcrypt
+Flask-DebugToolbar
+flask-mongoengine
+Flask-Caching
+Flask-Session
+Flask-WTF
+Flask-Mail
+flask-login
+
+# Workers
+redis
+celery
+flower
+
+# Additional packages
+pymongo
+pydantic
+PyYaml
+pendulum

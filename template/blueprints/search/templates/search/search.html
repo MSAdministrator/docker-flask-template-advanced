@@ -1,0 +1,20 @@
+{% extends "_base/base.html" %}
+{% block css %}
+{% endblock %}
+
+{% block content %}
+
+<div class="card text-center" style="margin: 10%">
+    <br>
+        {% for error in errors %}
+            <h4>{{ error }}</h4>
+        {% endfor %}
+    <br>
+    <div class="card-body" id='card-body'> 
+        {{ results }}
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+{% endblock %}

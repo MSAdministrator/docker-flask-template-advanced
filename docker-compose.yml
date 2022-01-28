@@ -1,0 +1,80 @@
+version: "3.7"
+
+volumes:
+  data:
+
+services:
+  flask:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flask
+    restart: unless-stopped
+    environment: 
+      MONGODB_HOST: mongo
+      MONGODB_DB: ${MONGODB_DB}
+      MONGODB_PORT: 27017
+      MONGODB_USERNAME: ${MONGODB_USERNAME}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+    ports:
+     - "7777:7777"
+    depends_on:
+      - redis
+      - mongo
+    volumes: ['./app:/app']
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile-worker
+    hostname: worker
+    environment: 
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+    command: celery -A template.blueprints.search.tasks worker -B -l info 
+    depends_on:
+      - redis
+    volumes: ['./app:/app']
+  monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile-worker
+    hostname: monitor
+    environment: 
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+    ports:
+     - "5555:5555"
+    entrypoint: celery
+    command:  -A template.blueprints.search.tasks --broker=redis://redis:6379/0 flower --port=5555 --broker=redis://redis:6379/0
+    depends_on:
+      - redis
+    volumes: ['./app:/app']
+  redis:
+    image: redis
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - ./.docker/mongodb/mongod.conf:/etc/mongod.conf
+      - ./.docker/mongodb/initdb.d/:/docker-entrypoint-initdb.d/
+      - ./.docker/mongodb/data/db/:/data/db/
+      - ./.docker/mongodb/data/log/:/var/log/mongodb/
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGODB_DB}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
+      MONGO_INITDB_USERNAME: ${MONGODB_USERNAME}
+      MONGO_INITDB_PASSWORD: ${MONGODB_PASSWORD}
+      MONGO_REPLICA_SET_NAME: rs0
+    command: ["-f", "/etc/mongod.conf"]
+    ports:
+      - "27017-27019:27017-27019"
+
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge

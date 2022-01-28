@@ -1,0 +1,29 @@
+{% extends "_base/base.html" %}
+{% block content %}
+
+  <div class="user-profile">
+    <div class ="page-header">
+      <h1>Welcome, <em>{{ user.name }}</em>!</h1>
+      <img src="{{ user.gravatar }}"</img>
+    </div>
+ 
+    <div class="card">
+      <h5 class="card-header">Email Address</h5>
+      <div class="card-body">
+        <h5 class="card-title">Email Address</h5>
+        <p class="card-text">{{user.email}}</p>
+      </div>
+    </div>
+    <div class="card">
+      <h5 class="card-header">Account Actions</h5>
+      <div class="card-body">
+        <h5 class="card-title">Actions available to perform on account</h5>
+        <a href="{{ url_for('users_bp.change_email_request') }}" class="btn btn-primary">Change Email</a>
+        <a href="{{ url_for('users_bp.change_password') }}" class="btn btn-primary">Change Password</a>
+        {% if not user.confirmed %}
+        <a href="{{ url_for('users_bp.resend_confirmation') }}" class="btn btn-primary">Resend Email Confirmation</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends '_base/base.html' %}
+{% from "bootstrap/form.html" import render_form, render_field %}
+{% block content %}
+
+  <header class="content-header">
+    <center><h1>Change Email Request</h1></center>
+    <hr><br>
+  </header>
+
+  <br>
+  <div class="container">
+    <form action="{{ url_for('users_bp.change_email_request') }}" method="post" class="form" role="form">
+      {{ form.csrf_token() }}
+      {{ render_field(form.email) }}
+      {{ render_field(form.password) }}
+      {{ render_field(form.submit) }}
+    </form>
+  </div>
+
+{% endblock %}
