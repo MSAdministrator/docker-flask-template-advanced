@@ -5,8 +5,11 @@ RUN pip install --upgrade pip
 RUN pip install -r /requirements.txt
 ENV TZ="America/Chicago"
 
+# Installing because if just installing from requirements.txt then error thrown
+# saying gunicorn not in environment path. This fixed it
 RUN pip install gunicorn
 
+# this directory /template should be the same name of your package folder
 COPY . /template
 WORKDIR /template
 

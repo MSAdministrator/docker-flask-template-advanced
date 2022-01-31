@@ -1,9 +1,39 @@
 version: "3.7"
 
 volumes:
-  data:
+  mongodbdata:
+    driver: local
+  flaskdata:
+    driver: local
+  nginxdata:
+    driver: local
+  workerdata:
+    driver: local
 
 services:
+  webserver:
+    image: linuxserver/swag
+    container_name: webserver
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=2000
+      - PGID=2000
+      - TZ=${TIMEZONE}
+      - SUBDOMAINS=${SUBDOMAIN}
+      - VALIDATION=http
+      - EMAIL=${EMAIL}
+      - STAGING=true
+    volumes:
+      - ./swag/nginx/site-confs/default:/config/nginx/site-confs/default
+    ports:
+      - 443:443
+      - 80:80
+    restart: unless-stopped
+    networks:
+      - frontend
+    depends_on: 
+      - flask
   flask:
     build:
       context: .
@@ -16,13 +46,16 @@ services:
       MONGODB_PORT: 27017
       MONGODB_USERNAME: ${MONGODB_USERNAME}
       MONGODB_PASSWORD: ${MONGODB_PASSWORD}
-      CELERY_RESULT_BACKEND: redis://redis:6379/0
-      CELERY_BROKER_URL: redis://redis:6379/0
     ports:
      - "7777:7777"
     depends_on:
       - redis
       - mongo
+    networks:
+      - frontend
+      - backend
+    volumes: 
+      - flaskdata:/var/www
   worker:
     build:
       context: .
@@ -31,9 +64,13 @@ services:
     environment: 
       CELERY_RESULT_BACKEND: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/0
-    command: celery -A template.blueprints.search.tasks worker -B -l info 
+    command: celery -A lophius.blueprints.search.tasks worker -B -l info 
     depends_on:
       - redis
+    networks:
+      - backend
+    volumes: 
+      - workerdata:/app
   monitor:
     build:
       context: .
@@ -45,11 +82,16 @@ services:
     ports:
      - "5555:5555"
     entrypoint: celery
-    command:  -A template.blueprints.search.tasks --broker=redis://redis:6379/0 flower --port=5555 --broker=redis://redis:6379/0
+    command:  -A lophius.blueprints.search.tasks --broker=redis://redis:6379/0 flower --port=5555 --broker=redis://redis:6379/0
     depends_on:
       - redis
+    networks:
+      - backend
   redis:
     image: redis
+    container_name: redis
+    networks:
+      - backend
   mongo:
     image: mongo
     restart: always
@@ -68,6 +110,8 @@ services:
     command: ["-f", "/etc/mongod.conf"]
     ports:
       - "27017-27019:27017-27019"
+    networks:
+      - backend
 
 
 networks:

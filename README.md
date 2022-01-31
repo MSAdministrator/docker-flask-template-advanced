@@ -1,13 +1,39 @@
-# swimlane-app-form
+# Advanced Docker Flask Template
 
-This project aims to provide a dynamic webform generator for Swimlane applications so that users can submit requests directly to Swimlane based on one or more defined fields.
+This project is a basic `Docker` (and `docker-compose`) Flask project that can be used as a base template.
+
+This project contains the following containers/services:
+
+* flask - This is the Flask web application service
+* worker - This is a single celery worker
+* monitor - This is a Flower container which can be used to monitor Redis Queues
+* redis - This is our Queue system which our Flask app will send data to and our worker will pick items off of the queue to be worked.
+* mongo - This is our database which stores User information as well as saves searches (as an example only).
 
 This project has the following features:
 
+* User Account features
+    * Registration
+    * Password Reset
+    * Change Email
+    * Login 
+    * Email Templates
+    * Plus many commmon user attributes
+* Celery Features
+    * A template layout support celery workers using Redis
+    * Hook worker requests for logging or troubleshooting
+    * Example of `Chaining` celery tasks
+* MongoDB Connection
+    * Database Session management best practices
 * Bootstrap 4 frontend
-* Dynamically render fields from Swimlane applications based on the application acronym
+* Utilizes best practices including:
+    * Flask application context
+    * Flask logging and error handling
+    * Flask Blueprints
+    * Utilizes a base template inherited within all blueprints
+    * Plus more!
 
-> NOTE: This is docker-compose project with only one container
+> A simpler template can be found [here](https://github.com/MSAdministrator/docker-flask-template)
 
 ### Prerequisites
 
@@ -18,8 +44,8 @@ To use this project you must download Docker and docker-compose on your local sy
 To get started you must first clone this repository and then make a copy of the `.env.example` file on your local system
 
 ```
-git clone git@github.com:swimlane/dofeedback.git
-cd dofeedback
+git clone https://github.com/MSAdministrator/docker-flask-template-advanced.git
+cd docker-flask-template-advanced
 cp .env.example .env
 ```
 
@@ -29,14 +55,7 @@ Once you have your repository and the `.env` file then you can run the following
 docker-compose up --build --remove-orphans
 ```
 
-## Running the tests
-
-There are currently `NO TESTS` but we will need to create some overtime.
-
-### Break down into end to end tests
-N/A
-
-### And coding style tests
+### Structure
 
 All sections of the website should be segmented into blueprints. Each `blueprint` should have the following structure:
 
@@ -58,7 +77,7 @@ Not all modules (single .py files) may be needed. For example not every blueprin
 
 ## Deployment
 
-Currently there is a production deployment docker-compose file [docker-compose.production.yml](docker-compose.production.yml) but there needs some work done to make it fully production ready.
+Currently there is `NO` production deployment docker-compose file.
 
 ## Built With
 
